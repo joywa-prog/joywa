@@ -1,1 +1,595 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JOYWA — Calculateur de Prix</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+--terracotta: #C4714A;
+--terracotta-light: #F0DDD3;
+--ocre: #D4A853;
+--sable: #E8D5B0;
+--sage: #7A9E7E;
+--sage-light: #D4E8D5;
+--creme: #F5EFE4;
+--beige: #EDE3CF;
+--brun: #3D2B1F;
+--blanc: #FDFAF5;
+--green: #2E7D32;
+--green-light: #E8F5E9;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+font-family: 'DM Sans', sans-serif;
+background: var(--creme);
+min-height: 100vh;
+padding: 24px 16px;
+color: var(--brun);
+}
 
+.container { max-width: 680px; margin: 0 auto; }
+
+/* HEADER */
+.header {
+text-align: center;
+margin-bottom: 32px;
+}
+.header-logo {
+font-family: 'Fredoka', sans-serif;
+font-size: 42px; font-weight: 700;
+color: var(--terracotta);
+letter-spacing: 6px;
+margin-bottom: 4px;
+}
+.header-sub {
+font-size: 12px; letter-spacing: 3px;
+text-transform: uppercase;
+color: var(--sage);
+}
+
+/* CARD */
+.card {
+background: var(--blanc);
+border-radius: 20px;
+padding: 28px;
+margin-bottom: 20px;
+box-shadow: 0 4px 20px rgba(61,43,31,0.06);
+}
+.card-title {
+font-family: 'Fredoka', sans-serif;
+font-size: 18px; font-weight: 600;
+color: var(--brun);
+margin-bottom: 20px;
+display: flex; align-items: center; gap: 8px;
+}
+
+/* TYPE SELECTOR */
+.type-grid {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 10px;
+margin-bottom: 4px;
+}
+.type-btn {
+padding: 12px 8px;
+border: 2px solid var(--beige);
+border-radius: 12px;
+background: var(--blanc);
+cursor: pointer;
+text-align: center;
+transition: all 0.2s;
+font-family: 'DM Sans', sans-serif;
+}
+.type-btn:hover { border-color: var(--terracotta); background: var(--terracotta-light); }
+.type-btn.active { border-color: var(--terracotta); background: var(--terracotta-light); }
+.type-btn .type-icon { font-size: 22px; margin-bottom: 4px; }
+.type-btn .type-name { font-size: 12px; font-weight: 600; color: var(--brun); }
+.type-btn .type-time { font-size: 10px; color: var(--sage); margin-top: 2px; }
+
+/* INPUTS */
+.input-group { margin-bottom: 18px; }
+.input-label {
+font-size: 13px; font-weight: 500;
+color: var(--brun); margin-bottom: 8px;
+display: flex; justify-content: space-between; align-items: center;
+}
+.input-hint { font-size: 11px; color: var(--sage); font-weight: 400; }
+.input-row {
+display: flex; align-items: center;
+background: var(--creme);
+border: 2px solid var(--beige);
+border-radius: 12px;
+overflow: hidden;
+transition: border-color 0.2s;
+}
+.input-row:focus-within { border-color: var(--terracotta); }
+.input-row input {
+flex: 1;
+border: none; background: transparent;
+padding: 12px 16px;
+font-size: 16px; font-family: 'DM Sans', sans-serif;
+color: var(--brun);
+outline: none;
+}
+.input-unit {
+padding: 12px 16px;
+font-size: 14px; font-weight: 600;
+color: var(--terracotta);
+background: var(--terracotta-light);
+}
+
+/* SLIDER */
+.slider-row {
+display: flex; align-items: center; gap: 12px;
+}
+.slider-row input[type=range] {
+flex: 1;
+-webkit-appearance: none;
+height: 6px;
+border-radius: 3px;
+background: var(--beige);
+outline: none;
+}
+.slider-row input[type=range]::-webkit-slider-thumb {
+-webkit-appearance: none;
+width: 20px; height: 20px;
+border-radius: 50%;
+background: var(--terracotta);
+cursor: pointer;
+box-shadow: 0 2px 6px rgba(196,113,74,0.4);
+}
+.slider-value {
+min-width: 48px; text-align: right;
+font-size: 15px; font-weight: 600;
+color: var(--terracotta);
+}
+
+/* TOGGLE */
+.toggle-group {
+display: flex; gap: 8px; flex-wrap: wrap;
+}
+.toggle-btn {
+padding: 8px 14px;
+border: 2px solid var(--beige);
+border-radius: 20px;
+background: var(--blanc);
+cursor: pointer;
+font-size: 12px; font-weight: 500;
+color: var(--brun);
+transition: all 0.2s;
+font-family: 'DM Sans', sans-serif;
+}
+.toggle-btn:hover { border-color: var(--sage); }
+.toggle-btn.active { border-color: var(--sage); background: var(--sage-light); color: var(--sage); }
+
+/* RESULT */
+.result-card {
+background: var(--brun);
+border-radius: 20px;
+padding: 28px;
+margin-bottom: 20px;
+color: var(--blanc);
+}
+.result-title {
+font-family: 'Fredoka', sans-serif;
+font-size: 16px; font-weight: 600;
+color: var(--sable);
+margin-bottom: 20px;
+letter-spacing: 1px;
+text-transform: uppercase;
+font-size: 12px;
+}
+.result-breakdown {
+display: flex; flex-direction: column; gap: 10px;
+margin-bottom: 24px;
+}
+.result-line {
+display: flex; justify-content: space-between; align-items: center;
+font-size: 14px;
+}
+.result-line .label { color: rgba(253,250,245,0.65); }
+.result-line .amount { font-weight: 600; color: var(--sable); }
+.result-divider {
+height: 1px; background: rgba(255,255,255,0.1);
+margin: 4px 0;
+}
+.result-total {
+display: flex; justify-content: space-between; align-items: center;
+padding: 16px 20px;
+background: var(--terracotta);
+border-radius: 14px;
+margin-bottom: 16px;
+}
+.result-total .total-label {
+font-family: 'Fredoka', sans-serif;
+font-size: 16px; font-weight: 600;
+color: rgba(255,255,255,0.85);
+}
+.result-total .total-price {
+font-family: 'Fredoka', sans-serif;
+font-size: 32px; font-weight: 700;
+color: var(--blanc);
+}
+.result-range {
+text-align: center;
+font-size: 13px;
+color: rgba(253,250,245,0.5);
+}
+.result-range span { color: var(--ocre); font-weight: 600; }
+
+/* MARGE INDICATOR */
+.marge-bar-wrap {
+margin-top: 16px;
+}
+.marge-bar-label {
+display: flex; justify-content: space-between;
+font-size: 12px; color: rgba(253,250,245,0.6);
+margin-bottom: 8px;
+}
+.marge-bar-bg {
+height: 8px; border-radius: 4px;
+background: rgba(255,255,255,0.1);
+overflow: hidden;
+}
+.marge-bar-fill {
+height: 100%; border-radius: 4px;
+background: var(--sage);
+transition: width 0.4s ease;
+}
+
+/* TIPS */
+.tip {
+display: flex; gap: 12px; align-items: flex-start;
+padding: 14px 16px;
+border-radius: 12px;
+background: var(--creme);
+border-left: 3px solid var(--terracotta);
+margin-bottom: 10px;
+font-size: 13px; line-height: 1.6;
+color: var(--brun);
+}
+.tip .tip-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+/* FOOTER */
+.footer {
+text-align: center;
+font-size: 11px; color: var(--sage);
+letter-spacing: 2px; text-transform: uppercase;
+margin-top: 8px; padding-bottom: 16px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- HEADER -->
+<div class="header">
+<div class="header-logo">JOYWA</div>
+<div class="header-sub">Calculateur de prix · Crochet & Wax</div>
+</div>
+
+<!-- TYPE DE PIÈCE -->
+<div class="card">
+<div class="card-title">🧶 Type de pièce</div>
+<div class="type-grid">
+<div class="type-btn active" onclick="setType('petit')" id="btn-petit">
+<div class="type-icon">👜</div>
+<div class="type-name">Petit sac</div>
+<div class="type-time">~45 min</div>
+</div>
+<div class="type-btn" onclick="setType('moyen')" id="btn-moyen">
+<div class="type-icon">👝</div>
+<div class="type-name">Sac moyen</div>
+<div class="type-time">~1h</div>
+</div>
+<div class="type-btn" onclick="setType('grand')" id="btn-grand">
+<div class="type-icon">🛍️</div>
+<div class="type-name">Grand sac</div>
+<div class="type-time">~1h30</div>
+</div>
+<div class="type-btn" onclick="setType('pochette')" id="btn-pochette">
+<div class="type-icon">👛</div>
+<div class="type-name">Pochette wax</div>
+<div class="type-time">~30 min</div>
+</div>
+<div class="type-btn" onclick="setType('duo')" id="btn-duo">
+<div class="type-icon">✨</div>
+<div class="type-name">Duo sac+pochette</div>
+<div class="type-time">~1h30</div>
+</div>
+<div class="type-btn" onclick="setType('custom')" id="btn-custom">
+<div class="type-icon">⚙️</div>
+<div class="type-name">Personnalisé</div>
+<div class="type-time">Manuel</div>
+</div>
+</div>
+</div>
+
+<!-- COÛTS -->
+<div class="card">
+<div class="card-title">💰 Coûts de fabrication</div>
+
+<div class="input-group">
+<div class="input-label">
+Coût de la laine
+<span class="input-hint">Prix payé en boutique</span>
+</div>
+<div class="input-row">
+<input type="number" id="laine" value="6" min="0" step="0.5" oninput="calculate()">
+<div class="input-unit">€</div>
+</div>
+</div>
+
+<div class="input-group">
+<div class="input-label">
+Coût du tissu wax
+<span class="input-hint">Portion utilisée</span>
+</div>
+<div class="input-row">
+<input type="number" id="wax" value="3" min="0" step="0.5" oninput="calculate()">
+<div class="input-unit">€</div>
+</div>
+</div>
+
+<div class="input-group">
+<div class="input-label">
+Autres matières
+<span class="input-hint">Fil, fermeture, anses...</span>
+</div>
+<div class="input-row">
+<input type="number" id="autres" value="0.50" min="0" step="0.5" oninput="calculate()">
+<div class="input-unit">€</div>
+</div>
+</div>
+</div>
+
+<!-- TEMPS -->
+<div class="card">
+<div class="card-title">⏱️ Votre temps</div>
+
+<div class="input-group">
+<div class="input-label">
+Temps de fabrication
+<span class="input-hint" id="temps-hint">1h 0min</span>
+</div>
+<div class="slider-row">
+<input type="range" id="temps" min="0.25" max="4" step="0.25" value="1" oninput="updateTemps(); calculate()">
+<div class="slider-value" id="temps-val">1h</div>
+</div>
+</div>
+
+<div class="input-group">
+<div class="input-label">
+Taux horaire
+<span class="input-hint">Votre valeur/heure</span>
+</div>
+<div class="slider-row">
+<input type="range" id="taux" min="8" max="30" step="1" value="10" oninput="updateTaux(); calculate()">
+<div class="slider-value" id="taux-val">10 €</div>
+</div>
+</div>
+</div>
+
+<!-- OPTIONS -->
+<div class="card">
+<div class="card-title">📦 Frais & options</div>
+
+<div class="input-group">
+<div class="input-label">Emballage (pochette kraft, sticker, carte)</div>
+<div class="input-row">
+<input type="number" id="emballage" value="1.50" min="0" step="0.5" oninput="calculate()">
+<div class="input-unit">€</div>
+</div>
+</div>
+
+<div class="input-group">
+<div class="input-label">
+Plateformes actives
+<span class="input-hint">Commissions prélevées</span>
+</div>
+<div class="toggle-group">
+<div class="toggle-btn active" onclick="togglePlatform(this, 'etsy')" data-platform="etsy">Etsy (6.5%)</div>
+<div class="toggle-btn" onclick="togglePlatform(this, 'paypal')" data-platform="paypal">PayPal (3%)</div>
+<div class="toggle-btn" onclick="togglePlatform(this, 'instagram')" data-platform="instagram">Instagram (5%)</div>
+</div>
+</div>
+
+<div class="input-group">
+<div class="input-label">
+Marge bénéficiaire
+<span class="input-hint">Pour réinvestir</span>
+</div>
+<div class="slider-row">
+<input type="range" id="marge" min="0" max="50" step="5" value="20" oninput="updateMarge(); calculate()">
+<div class="slider-value" id="marge-val">20%</div>
+</div>
+</div>
+</div>
+
+<!-- RÉSULTAT -->
+<div class="result-card">
+<div class="result-title">💡 Résultat du calcul</div>
+
+<div class="result-breakdown">
+<div class="result-line">
+<span class="label">🧶 Matières premières</span>
+<span class="amount" id="r-matieres">9,50 €</span>
+</div>
+<div class="result-line">
+<span class="label">⏱️ Votre temps</span>
+<span class="amount" id="r-temps">10,00 €</span>
+</div>
+<div class="result-line">
+<span class="label">📦 Emballage</span>
+<span class="amount" id="r-emballage">1,50 €</span>
+</div>
+<div class="result-line">
+<span class="label">💳 Commissions plateformes</span>
+<span class="amount" id="r-commissions">—</span>
+</div>
+<div class="result-divider"></div>
+<div class="result-line">
+<span class="label">Coût total</span>
+<span class="amount" id="r-cout">21,00 €</span>
+</div>
+<div class="result-line">
+<span class="label">📈 Marge (20%)</span>
+<span class="amount" id="r-marge">4,20 €</span>
+</div>
+</div>
+
+<div class="result-total">
+<div class="total-label">Prix de vente conseillé</div>
+<div class="total-price" id="r-total">25,20 €</div>
+</div>
+
+<div class="result-range" id="r-range">
+Fourchette recommandée : <span id="r-min">—</span> à <span id="r-max">—</span>
+</div>
+
+<div class="marge-bar-wrap">
+<div class="marge-bar-label">
+<span>Coûts</span>
+<span id="r-marge-pct">Marge nette : —</span>
+</div>
+<div class="marge-bar-bg">
+<div class="marge-bar-fill" id="r-bar" style="width: 20%"></div>
+</div>
+</div>
+</div>
+
+<!-- CONSEILS -->
+<div class="tip">
+<span class="tip-icon">💡</span>
+<span id="tip-text">Entrez vos coûts pour obtenir un conseil personnalisé.</span>
+</div>
+
+<div class="footer">JOYWA · Fait main avec ♥</div>
+</div>
+
+<script>
+const typeDefaults = {
+petit: { laine: 5, wax: 2, autres: 0.5, temps: 0.75, emballage: 1.5 },
+moyen: { laine: 6, wax: 3, autres: 0.5, temps: 1, emballage: 1.5 },
+grand: { laine: 10, wax: 4, autres: 1, temps: 1.5, emballage: 2 },
+pochette: { laine: 0, wax: 3, autres: 0.5, temps: 0.5, emballage: 1 },
+duo: { laine: 8, wax: 4, autres: 1, temps: 1.5, emballage: 2 },
+custom: null
+};
+
+let platforms = { etsy: true, paypal: false, instagram: false };
+
+function setType(type) {
+document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+document.getElementById('btn-' + type).classList.add('active');
+
+if (type !== 'custom' && typeDefaults[type]) {
+const d = typeDefaults[type];
+document.getElementById('laine').value = d.laine;
+document.getElementById('wax').value = d.wax;
+document.getElementById('autres').value = d.autres;
+document.getElementById('temps').value = d.temps;
+document.getElementById('emballage').value = d.emballage;
+updateTemps(); updateTaux(); updateMarge();
+}
+calculate();
+}
+
+function togglePlatform(el, key) {
+platforms[key] = !platforms[key];
+el.classList.toggle('active', platforms[key]);
+calculate();
+}
+
+function updateTemps() {
+const v = parseFloat(document.getElementById('temps').value);
+const h = Math.floor(v);
+const m = Math.round((v - h) * 60);
+document.getElementById('temps-val').textContent = h > 0 ? (m > 0 ? `${h}h${m}` : `${h}h`) : `${m}min`;
+document.getElementById('temps-hint').textContent = h > 0 ? (m > 0 ? `${h}h ${m}min` : `${h}h 0min`) : `${m} min`;
+}
+
+function updateTaux() {
+const v = document.getElementById('taux').value;
+document.getElementById('taux-val').textContent = v + ' €';
+}
+
+function updateMarge() {
+const v = document.getElementById('marge').value;
+document.getElementById('marge-val').textContent = v + '%';
+}
+
+function fmt(n) {
+return n.toFixed(2).replace('.', ',') + ' €';
+}
+
+function calculate() {
+const laine = parseFloat(document.getElementById('laine').value) || 0;
+const wax = parseFloat(document.getElementById('wax').value) || 0;
+const autres = parseFloat(document.getElementById('autres').value) || 0;
+const temps = parseFloat(document.getElementById('temps').value) || 0;
+const taux = parseFloat(document.getElementById('taux').value) || 0;
+const emballage = parseFloat(document.getElementById('emballage').value) || 0;
+const margePct = parseFloat(document.getElementById('marge').value) || 0;
+
+const matieres = laine + wax + autres;
+const tempsCost = temps * taux;
+const sousTotal = matieres + tempsCost + emballage;
+const margeVal = sousTotal * margePct / 100;
+const avantCommission = sousTotal + margeVal;
+
+// Platform commissions (applied on top)
+let commissionPct = 0;
+if (platforms.etsy) commissionPct += 6.5;
+if (platforms.paypal) commissionPct += 3;
+if (platforms.instagram) commissionPct += 5;
+
+// Prix = avantCommission / (1 - commissionPct/100)
+const total = commissionPct > 0 ? avantCommission / (1 - commissionPct / 100) : avantCommission;
+const commissionVal = total - avantCommission;
+
+const margeNettePct = total > 0 ? ((total - sousTotal - commissionVal) / total * 100) : 0;
+
+// Update UI
+document.getElementById('r-matieres').textContent = fmt(matieres);
+document.getElementById('r-temps').textContent = fmt(tempsCost);
+document.getElementById('r-emballage').textContent = fmt(emballage);
+document.getElementById('r-commissions').textContent = commissionPct > 0 ? `~${fmt(commissionVal)} (${commissionPct}%)` : '—';
+document.getElementById('r-cout').textContent = fmt(sousTotal);
+document.getElementById('r-marge').textContent = fmt(margeVal) + ` (${margePct}%)`;
+document.getElementById('r-total').textContent = fmt(Math.ceil(total));
+
+// Range: arrondi au 5 inférieur / supérieur
+const minPrice = Math.floor(total / 5) * 5;
+const maxPrice = Math.ceil(total / 5) * 5 + 5;
+document.getElementById('r-min').textContent = minPrice + ' €';
+document.getElementById('r-max').textContent = maxPrice + ' €';
+
+// Marge bar
+const barWidth = Math.min(Math.max(margeNettePct, 0), 100);
+document.getElementById('r-bar').style.width = barWidth + '%';
+document.getElementById('r-marge-pct').textContent = `Marge nette : ${margeNettePct.toFixed(0)}%`;
+
+// Tip
+let tip = '';
+if (total < 25) {
+tip = '⚠️ Prix très bas — vérifiez votre taux horaire. Ne bradez pas votre savoir-faire !';
+} else if (total < 40) {
+tip = '✅ Prix accessible, cohérent pour une petite pièce ou une pochette.';
+} else if (total < 60) {
+tip = '✅ Excellent positionnement moyen de gamme — juste et valorisant pour votre travail.';
+} else if (total < 90) {
+tip = '⭐ Positionnement haut de gamme artisanal — justifiable si la pièce est grande et soignée.';
+} else {
+tip = '💎 Prix premium — assurez-vous d\'avoir des photos et une présentation à la hauteur.';
+}
+document.getElementById('tip-text').textContent = tip;
+}
+
+// Init
+updateTemps(); updateTaux(); updateMarge(); calculate();
+</script>
+</body>
+</html>
